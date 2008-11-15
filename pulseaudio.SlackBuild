@@ -1,0 +1,88 @@
+#!/bin/sh
+#
+# Slackware build script for PulseAudio
+# Written by Georgi D. Sotirov <gdsotirov@dir.bg>
+# Visit SlackPack at http://sotirov-bg.net/slackpack/
+#
+
+. /etc/slack-package.conf
+
+NAME=pulseaudio
+VERSION=0.9.13
+BUILD=1
+ARCH=${ARCH:-i486}
+
+CWD=${CWD:-`pwd`}
+TMP=${TMP:-/tmp}
+
+if [ ! -e $TMP ]; then
+  mkdir -p $TMP # location to build the source
+fi
+
+SRC=$TMP/$NAME-$VERSION
+if [ -e $SRC -a -d $SRC ]; then
+  echo "Source directory '$SRC' already exists! Plaese, move it or remove it."
+  exit 1
+fi
+
+PKG=$TMP/package-$NAME
+if [ -e $PKG -a -d $PKG ]; then
+  echo "Package creation directory '$PKG' already exists! Please, move it or remove it."
+  exit 2
+fi
+mkdir -p $PKG
+
+# Extract the sources
+cd $TMP
+tar -zxvf $CWD/$NAME-$VERSION.tar.gz || exit 1
+cd $SRC
+fix_source
+
+CFLAGS=$SLKCFLAGS \
+CXXFLAGS=$SLKCFLAGS \
+./configure --build=$ARCH-slackware-linux \
+            --host=$ARCH-slackware-linux \
+            --prefix=/usr \
+            --sysconfdir=/etc \
+            --mandir=/usr/man \
+            --enable-shared=yes \
+            --enable-static=no \
+            --enable-alsa || exit 2
+
+make -j4 || exit 3
+make DESTDIR=$PKG install || exit 4
+
+# Complement install
+install -m 755 -d $PKG/usr/share/applications
+cat $PKG/etc/xdg/autostart/$NAME.desktop | sed s/Categories\=/Categories\=AudioVideo\;/ > $PKG/usr/share/applications/$NAME.desktop
+
+bin_perms $PKG
+( cd $PKG/usr/libexec/pulse; chmod 0755 * ) # fix permissions in libexec
+( cd $PKG; strip_bin; strip_lib )
+( cd $SRC; create_docs $PKG $NAME-$VERSION )
+gzip_man $PKG
+
+# Copy service info
+install -m 755 -d $PKG/install
+install -m 644 $CWD/slack-desc     $PKG/install/slack-desc
+install -m 644 $CWD/slack-required $PKG/install/slack-required
+
+SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
+install -m 755 -d $SBDIR
+install -m 644 $CWD/slack-desc       $SBDIR/slack-desc
+install -m 644 $CWD/slack-required   $SBDIR/slack-required
+install -m 644 $CWD/$NAME.SlackBuild $SBDIR/$NAME.SlackBuild
+
+PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
+cd $PKG
+makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
+cd $PKG_DIR
+md5sum $PKGNAME.tgz > $PKGNAME.tgz.md5
+cp $CWD/slack-desc $PKGNAME.txt
+
+# Clean up (optionally)
+if [ "$1" = "--cleanup" ]; then
+  rm -rf $SRC
+  rm -rf $PKG
+fi
+
