@@ -5,10 +5,10 @@
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
 
-. /etc/slack-package.conf
+. ../slack-package.conf
 
 NAME=pulseaudio
-VERSION=0.9.13
+VERSION=0.9.19
 BUILD=1
 ARCH=${ARCH:-i486}
 
@@ -38,8 +38,15 @@ tar -zxvf $CWD/$NAME-$VERSION.tar.gz || exit 1
 cd $SRC
 fix_source
 
-CFLAGS=$SLKCFLAGS \
-CXXFLAGS=$SLKCFLAGS \
+# Apply patches
+# Downgrade dependencies on ALSA and udev
+patch -p1 < $CWD/$NAME-$VERSION.diff
+
+# Configure
+rm -f $SRC/configure
+autoconf
+CFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
+CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 ./configure --build=$ARCH-slackware-linux \
             --host=$ARCH-slackware-linux \
             --prefix=/usr \
@@ -69,15 +76,16 @@ install -m 644 $CWD/slack-required $PKG/install/slack-required
 
 SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 755 -d $SBDIR
-install -m 644 $CWD/slack-desc       $SBDIR/slack-desc
-install -m 644 $CWD/slack-required   $SBDIR/slack-required
-install -m 644 $CWD/$NAME.SlackBuild $SBDIR/$NAME.SlackBuild
+install -m 644 $CWD/slack-desc          $SBDIR/slack-desc
+install -m 644 $CWD/slack-required      $SBDIR/slack-required
+install -m 644 $CWD/$NAME-$VERSION.diff $SBDIR/$NAME-$VERSION.diff
+install -m 644 $CWD/$NAME.SlackBuild    $SBDIR/$NAME.SlackBuild
 
 PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
 cd $PKG
-makepkg -l y -c n $PKG_DIR/$PKGNAME.tgz
+makepkg -l y -c n $PKG_DIR/$PKGNAME.txz
 cd $PKG_DIR
-md5sum $PKGNAME.tgz > $PKGNAME.tgz.md5
+md5sum $PKGNAME.txz > $PKGNAME.txz.md5
 cp $CWD/slack-desc $PKGNAME.txt
 
 # Clean up (optionally)
