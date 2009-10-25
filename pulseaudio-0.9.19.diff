@@ -1,0 +1,30 @@
+diff -U 3 -N -r pulseaudio-0.9.19-orig/configure.ac pulseaudio-0.9.19/configure.ac
+--- pulseaudio-0.9.19-orig/configure.ac	2009-09-30 04:03:53.000000000 +0300
++++ pulseaudio-0.9.19/configure.ac	2009-10-25 20:16:25.000000000 +0200
+@@ -757,7 +757,7 @@
+         [alsa=auto])
+ 
+ if test "x${alsa}" != xno ; then
+-    PKG_CHECK_MODULES(ASOUNDLIB, [ alsa >= 1.0.19 ],
++    PKG_CHECK_MODULES(ASOUNDLIB, [ alsa >= 1.0.18 ],
+         [
+             HAVE_ALSA=1
+             AC_DEFINE([HAVE_ALSA], 1, [Have ALSA?])
+@@ -765,7 +765,7 @@
+         [
+             HAVE_ALSA=0
+             if test "x$alsa" = xyes ; then
+-                AC_MSG_ERROR([*** Needed alsa >= 1.0.19 support not found])
++                AC_MSG_ERROR([*** Needed alsa >= 1.0.18 support not found])
+             fi
+         ])
+ else
+@@ -1103,7 +1103,7 @@
+         ],
+         [udev=auto])
+ if test "x${udev}" != xno -a \( "x$HAVE_OSS" = "x1" -o "x$HAVE_ALSA" = "x1" \) ; then
+-    PKG_CHECK_MODULES(UDEV, [ libudev >= 143 ],
++    PKG_CHECK_MODULES(UDEV, [ libudev >= 141 ],
+         [
+             HAVE_UDEV=1
+             AC_DEFINE([HAVE_UDEV], 1, [Have UDEV.])
