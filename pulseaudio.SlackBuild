@@ -8,7 +8,7 @@
 . ../slack-package.conf
 
 NAME=pulseaudio
-VERSION=0.9.19
+VERSION=0.9.21
 BUILD=1
 ARCH=${ARCH:-i486}
 
