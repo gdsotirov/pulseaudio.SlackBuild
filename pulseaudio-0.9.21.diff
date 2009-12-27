@@ -1,6 +1,6 @@
-diff -U 3 -N -r pulseaudio-0.9.19-orig/configure.ac pulseaudio-0.9.19/configure.ac
---- pulseaudio-0.9.19-orig/configure.ac	2009-09-30 04:03:53.000000000 +0300
-+++ pulseaudio-0.9.19/configure.ac	2009-10-25 20:16:25.000000000 +0200
+diff -U 3 -N -r pulseaudio-0.9.21-orig/configure.ac pulseaudio-0.9.21/configure.ac
+--- pulseaudio-0.9.21-orig/configure.ac	2009-11-23 06:06:47.000000000 +0200
++++ pulseaudio-0.9.21/configure.ac	2009-12-27 23:31:27.000000000 +0200
 @@ -757,7 +757,7 @@
          [alsa=auto])
  
