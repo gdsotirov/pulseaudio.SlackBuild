@@ -1,14 +1,29 @@
 #!/bin/sh
 #
 # Slackware build script for PulseAudio
-# Written by Georgi D. Sotirov <gdsotirov@dir.bg>
-# Visit SlackPack at http://sotirov-bg.net/slackpack/
+# Copyright (C) 2008-2009,2012 Georgi D. Sotirov <gdsotirov@dir.bg>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# 
+# $Id: pulseaudio.SlackBuild,v 1.4 2013/01/06 15:56:48 gsotirov Exp $
 #
 
-. ../slack-package.conf
+. ../../slack-package.conf
 
 NAME=pulseaudio
-VERSION=0.9.21
+VERSION=0.9.23
 BUILD=1
 ARCH=${ARCH:-i486}
 
@@ -40,11 +55,11 @@ fix_source
 
 # Apply patches
 # Downgrade dependencies on ALSA and udev
-patch -p1 < $CWD/$NAME-$VERSION.diff
+#patch -p1 < $CWD/$NAME-$VERSION.diff || exit 2
 
 # Configure
-rm -f $SRC/configure
-autoconf
+#rm -f $SRC/configure
+#autoconf
 CFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 ./configure --build=$ARCH-slackware-linux \
@@ -54,10 +69,10 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --mandir=/usr/man \
             --enable-shared=yes \
             --enable-static=no \
-            --enable-alsa || exit 2
+            --enable-alsa || exit 3
 
-make -j4 || exit 3
-make DESTDIR=$PKG install || exit 4
+make V=1 -j4 || exit 4
+make DESTDIR=$PKG install || exit 5
 
 # Complement install
 install -m 755 -d $PKG/usr/share/applications
@@ -78,7 +93,8 @@ SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 755 -d $SBDIR
 install -m 644 $CWD/slack-desc          $SBDIR/slack-desc
 install -m 644 $CWD/slack-required      $SBDIR/slack-required
-install -m 644 $CWD/$NAME-$VERSION.diff $SBDIR/$NAME-$VERSION.diff
+install -m 644 $CWD/slack-suggests      $SBDIR/slack-suggests
+#install -m 644 $CWD/$NAME-$VERSION.diff $SBDIR/$NAME-$VERSION.diff
 install -m 644 $CWD/$NAME.SlackBuild    $SBDIR/$NAME.SlackBuild
 
 PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
