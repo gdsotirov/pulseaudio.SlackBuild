@@ -1,5 +1,5 @@
-GConf >= 3.2.3gsb
-ORBit2 >= 2.14.19gsb
+GConf >= 3.2.3
+ORBit2 >= 2.14.19
 alsa-lib >= 1.0.24.1
 attr >= 2.4.45
 avahi >= 0.6.31
@@ -28,7 +28,7 @@ libXext >= 1.2.0
 libXi >= 1.4.2
 libXtst >= 1.2.0
 libcap >= 2.20
-libffi >= 3.0.10gsb
+libffi >= 3.0.10
 libogg >= 1.2.2
 libsamplerate >= 0.1.8
 libsndfile >= 1.0.25
