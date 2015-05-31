@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
-# $Id: pulseaudio.SlackBuild,v 1.5 2014/08/17 18:07:19 gsotirov Exp $
+# $Id: pulseaudio.SlackBuild,v 1.5.2.1 2015/05/31 14:03:31 gsotirov Exp $
 #
 
 . ../../slack-package.conf
@@ -65,6 +65,7 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 ./configure --build=$ARCH-slackware-linux \
             --host=$ARCH-slackware-linux \
             --prefix=/usr \
+            --libdir=/usr/lib${LIBDIRSUFFIX} \
             --sysconfdir=/etc \
             --mandir=/usr/man \
             --enable-shared=yes \
@@ -72,7 +73,7 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --enable-alsa || exit 3
 
 make V=1 -j4 || exit 4
-make DESTDIR=$PKG install || exit 5
+make V=1 DESTDIR=$PKG install || exit 5
 
 # Complement install
 install -m 755 -d $PKG/usr/share/applications
