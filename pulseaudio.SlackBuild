@@ -17,13 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
-# $Id: pulseaudio.SlackBuild,v 1.9 2015/05/31 15:01:19 gsotirov Exp $
+# $Id: pulseaudio.SlackBuild,v 1.10 2015/05/31 17:34:21 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=pulseaudio
-VERSION=4.0
+VERSION=6.0
 BUILD=${BUILD:-1}
 ARCH=${ARCH:-i486}
 
@@ -66,7 +66,7 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --enable-static=no \
             --enable-largefile \
             --enable-x11 \
-            --enable-samplerate \
+            --disable-samplerate \
             --enable-oss-output \
             --enable-oss-wrapper \
             --enable-alsa \
