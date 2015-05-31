@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
-# $Id: pulseaudio.SlackBuild,v 1.8 2015/05/31 14:14:26 gsotirov Exp $
+# $Id: pulseaudio.SlackBuild,v 1.9 2015/05/31 15:01:19 gsotirov Exp $
 #
 
 . ../../slack-package.conf
@@ -64,7 +64,23 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --mandir=/usr/man \
             --enable-shared=yes \
             --enable-static=no \
-            --enable-alsa || exit 4
+            --enable-largefile \
+            --enable-x11 \
+            --enable-samplerate \
+            --enable-oss-output \
+            --enable-oss-wrapper \
+            --enable-alsa \
+            --enable-esound \
+            --enable-avahi \
+            --enable-jack \
+            --enable-asyncns \
+            --enable-dbus \
+            --enable-bluez \
+            --enable-udev \
+            --enable-hal-compat \
+            --enable-ipv6 \
+            --enable-openssl \
+            --enable-orc || exit 4
 
 make V=1 -j4 || exit 5
 make V=1 DESTDIR=$PKG install || exit 6
