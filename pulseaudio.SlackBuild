@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Slackware build script for PulseAudio
-# Copyright (C) 2008-2015 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Copyright (C) 2008-2016 Georgi D. Sotirov <gdsotirov@dir.bg>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,15 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
-# $Id: pulseaudio.SlackBuild,v 1.10 2015/05/31 17:34:21 gsotirov Exp $
+# $Id: pulseaudio.SlackBuild,v 1.11 2016/08/11 13:42:20 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=pulseaudio
-VERSION=6.0
+VERSION=9.0
 BUILD=${BUILD:-1}
-ARCH=${ARCH:-i486}
+ARCH=${ARCH:-i586}
 
 CWD=${CWD:-`pwd`}
 TMP=${TMP:-/tmp}
@@ -66,21 +66,24 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --enable-static=no \
             --enable-largefile \
             --enable-x11 \
-            --disable-samplerate \
             --enable-oss-output \
             --enable-oss-wrapper \
             --enable-alsa \
-            --enable-esound \
+            --enable-glib2 \
+            --enable-gtk3 \
+            --enable-gconf \
             --enable-avahi \
             --enable-jack \
             --enable-asyncns \
             --enable-dbus \
-            --enable-bluez \
+            --enable-bluez5 \
             --enable-udev \
             --enable-hal-compat \
             --enable-ipv6 \
             --enable-openssl \
-            --enable-orc || exit 4
+            --enable-gcov \
+            --enable-orc \
+            --enable-manpages || exit 4
 
 make V=1 -j4 || exit 5
 make V=1 DESTDIR=$PKG install || exit 6
