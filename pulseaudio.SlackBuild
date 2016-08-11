@@ -5,7 +5,7 @@
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
 
-. ../slack-package.conf
+. ../../slack-package.conf
 
 NAME=pulseaudio
 VERSION=0.9.21
@@ -50,6 +50,7 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 ./configure --build=$ARCH-slackware-linux \
             --host=$ARCH-slackware-linux \
             --prefix=/usr \
+            --libdir=/usr/lib${LIBDIRSUFFIX} \
             --sysconfdir=/etc \
             --mandir=/usr/man \
             --enable-shared=yes \
