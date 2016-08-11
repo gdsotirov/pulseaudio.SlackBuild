@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Slackware build script for PulseAudio
-# Copyright (C) 2008-2009,2012 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Copyright (C) 2008-2016 Georgi D. Sotirov <gdsotirov@dir.bg>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 # 
-# $Id: pulseaudio.SlackBuild,v 1.4 2013/01/06 15:56:48 gsotirov Exp $
+# $Id: pulseaudio.SlackBuild,v 1.4.2.1 2016/08/11 18:35:02 gsotirov Exp $
 #
 
 . ../../slack-package.conf
@@ -65,6 +65,7 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 ./configure --build=$ARCH-slackware-linux \
             --host=$ARCH-slackware-linux \
             --prefix=/usr \
+            --libdir=/usr/lib${LIBDIRSUFFIX} \
             --sysconfdir=/etc \
             --mandir=/usr/man \
             --enable-shared=yes \
