@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Slackware build script for PulseAudio
-# Copyright (C) 2008-2016 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Copyright (C) 2008-2017 Georgi D. Sotirov <gdsotirov@dir.bg>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,16 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
-# $Id: pulseaudio.SlackBuild,v 1.11 2016/08/11 13:42:20 gsotirov Exp $
+#
+# $Id: pulseaudio.SlackBuild,v 1.12 2017/04/16 13:40:31 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=pulseaudio
 VERSION=9.0
-BUILD=${BUILD:-1}
 ARCH=${ARCH:-i586}
+BUILD=${BUILD:-1}
 
 CWD=${CWD:-`pwd`}
 TMP=${TMP:-/tmp}
@@ -34,13 +34,13 @@ if [ ! -e $TMP ]; then
   mkdir -p $TMP # location to build the source
 fi
 
-SRC=$TMP/$NAME-$VERSION
+SRC=$TMP/${NAME}-${VERSION}
 if [ -e $SRC -a -d $SRC ]; then
   echo "Source directory '$SRC' already exists! Plaese, move it or remove it."
   exit 1
 fi
 
-PKG=$TMP/package-$NAME
+PKG=$TMP/package-${NAME}
 if [ -e $PKG -a -d $PKG ]; then
   echo "Package creation directory '$PKG' already exists! Please, move it or remove it."
   exit 2
@@ -49,15 +49,15 @@ mkdir -p $PKG
 
 # Extract the sources
 cd $TMP
-tar -xvf $CWD/$NAME-$VERSION.tar.?z* || exit 3
+tar -xvf $CWD/${NAME}-${VERSION}.tar.?z* || exit 3
 cd $SRC
 fix_source
 
 # Configure
 CFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
 CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
-./configure --build=$ARCH-slackware-linux \
-            --host=$ARCH-slackware-linux \
+./configure --build=${ARCH}-slackware-linux \
+            --host=${ARCH}-slackware-linux \
             --prefix=/usr \
             --libdir=/usr/lib${LIBDIRSUFFIX} \
             --sysconfdir=/etc \
@@ -76,45 +76,60 @@ CXXFLAGS="$SLKCFLAGS -DLIBUDEV_I_KNOW_THE_API_IS_SUBJECT_TO_CHANGE" \
             --enable-jack \
             --enable-asyncns \
             --enable-dbus \
+            --disable-bluez4 \
             --enable-bluez5 \
             --enable-udev \
-            --enable-hal-compat \
+            --disable-hal-compat \
             --enable-ipv6 \
             --enable-openssl \
             --enable-gcov \
             --enable-orc \
-            --enable-manpages || exit 4
+            --enable-manpages \
+            --with-system-user=pulse \
+            --with-system-group=pulse \
+            --with-access-group=audio \
+            --with-bash-completion-dir=/usr/share/bash-completion/completions || exit 4
 
+# Build & install
 make V=1 -j4 || exit 5
 make V=1 DESTDIR=$PKG install || exit 6
 
-# Complement install
+# Rename configuration files
+( cd $PKG/etc/pulse
+  mv client.conf client.conf.new
+  mv daemon.conf daemon.conf.new
+  mv default.pa  default.pa.new
+  mv system.pa   system.pa.new )
+
+# Modify and copy .desktop file in the right place
 install -m 755 -d $PKG/usr/share/applications
-cat $PKG/etc/xdg/autostart/$NAME.desktop | sed s/Categories\=/Categories\=AudioVideo\;/ > $PKG/usr/share/applications/$NAME.desktop
+cat $PKG/etc/xdg/autostart/${NAME}.desktop | sed s/Categories\=/Categories\=AudioVideo\;/ > $PKG/usr/share/applications/${NAME}.desktop
 
 bin_perms $PKG
 ( cd $PKG/usr/libexec/pulse; chmod 0755 * ) # fix permissions in libexec
 ( cd $PKG; strip_bin; strip_lib )
-( cd $SRC; create_docs $PKG $NAME-$VERSION )
+( cd $SRC; create_docs $PKG ${NAME}-${VERSION} )
 gzip_man $PKG
 
 # Copy service info
 install -m 755 -d $PKG/install
+install -m 644 $CWD/doinst.sh      $PKG/install/doinst.sh
 install -m 644 $CWD/slack-desc     $PKG/install/slack-desc
 install -m 644 $CWD/slack-required $PKG/install/slack-required
 
-SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
+SBDIR=$PKG/usr/src/slackbuilds/${NAME}-${VERSION}
 install -m 755 -d $SBDIR
-install -m 644 $CWD/slack-desc          $SBDIR/slack-desc
-install -m 644 $CWD/slack-required      $SBDIR/slack-required
-install -m 644 $CWD/$NAME.SlackBuild    $SBDIR/$NAME.SlackBuild
+install -m 644 $CWD/doinst.sh          $SBDIR/doinst.sh
+install -m 644 $CWD/slack-desc         $SBDIR/slack-desc
+install -m 644 $CWD/slack-required     $SBDIR/slack-required
+install -m 644 $CWD/${NAME}.SlackBuild $SBDIR/${NAME}.SlackBuild
 
-PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
+PKGNAME=${NAME}-${VERSION}-$ARCH-$BUILD$MYIN
 cd $PKG
-makepkg -l y -c n $PKG_DIR/$PKGNAME.txz
+makepkg -l y -c n $PKG_DIR/${PKGNAME}.txz
 cd $PKG_DIR
-md5sum $PKGNAME.txz > $PKGNAME.txz.md5
-cp $CWD/slack-desc $PKGNAME.txt
+md5sum ${PKGNAME}.txz > ${PKGNAME}.txz.md5
+cp $CWD/slack-desc ${PKGNAME}.txt
 
 # Clean up (optionally)
 if [ "$1" = "--cleanup" ]; then
