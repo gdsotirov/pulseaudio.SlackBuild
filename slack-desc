@@ -8,4 +8,4 @@ pulseaudio: machine, changing the sample format or channel count and mixing
 pulseaudio: several sounds into one are easily achieved using a sound server.
 pulseaudio:
 pulseaudio:
-pulseaudio: Packaged by Georgi D. Sotirov <gdsotirov@dir.bg>
+pulseaudio: Packaged by Georgi D. Sotirov <gdsotirov@gmail.com>
